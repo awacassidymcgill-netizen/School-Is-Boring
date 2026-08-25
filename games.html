@@ -11,13 +11,14 @@
         nav { background: #1a1a1e; padding: 10px; text-align: center; }
         nav a { color: #b3b3b3; margin: 0 15px; text-decoration: none; font-weight: bold; }
         nav a:hover { color: #28a745; text-decoration: underline; }
-        main { max-width: 900px; margin: 20px auto; padding: 20px; background: #1e1e24; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        main { max-width: 1000px; margin: 20px auto; padding: 20px; background: #1e1e24; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
         
-        /* Grid Layout */
-        .arcade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .game-card { background: #2a2a32; border: 1px solid #3f3f46; border-radius: 6px; padding: 15px; text-align: center; }
+        /* Grid Layout for Game Cards */
+        .arcade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .game-card { background: #2a2a32; border: 1px solid #3f3f46; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
         .game-card h3 { margin-top: 0; color: #28a745; }
+        .game-card p { font-size: 0.9rem; color: #ccc; flex-grow: 1; margin-bottom: 15px; }
         .play-btn { background: #28a745; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; transition: background 0.2s; }
         .play-btn:hover { background: #218838; }
         
@@ -76,17 +77,43 @@
 
         <main>
             <h2>Available Web Games</h2>
-            <p>Select a title to launch the unblocked source frame asset natively over this dashboard layout.</p>
+            <p>Select any title to launch the unblocked source frame asset natively over this dashboard layout.</p>
             
             <div class="arcade-grid">
-                <!-- Slope Game Card Integration -->
+                <!-- 1. Slope Game Card -->
                 <div class="game-card">
                     <h3>Slope 3D</h3>
                     <p>Drive a ball down a steep, changing geometric race path. Dodge red barrier structures and try to survive.</p>
-                    <button class="play-btn" onclick="openGame('https://chsydev.github.io/Slope-Game/')">Launch Game</button>
+                    <button class="play-btn" onclick="openGame('https://github.io')">Launch Game</button>
                 </div>
 
-                <!-- Add more cards below in the exact same format whenever you find more working URLs -->
+                <!-- 2. Cookie Clicker Card -->
+                <div class="game-card">
+                    <h3>Cookie Clicker</h3>
+                    <p>Bake an astronomical number of cookies by clicking on a giant cookie and purchasing helpful upgrades.</p>
+                    <button class="play-btn" onclick="openGame('https://orteil.dashnet.org/cookieclicker/')">Launch Game</button>
+                </div>
+
+                <!-- 3. Geometry Dash Card -->
+                <div class="game-card">
+                    <h3>Geometry Dash</h3>
+                    <p>Jump and fly your way through danger in this rhythm-based action platformer. Time your taps perfectly.</p>
+                    <button class="play-btn" onclick="openGame('https://chsydev.github.io/Geometry-Dash/')">Launch Game</button>
+                </div>
+
+                <!-- 4. Vex 5 Card -->
+                <div class="game-card">
+                    <h3>Vex 5</h3>
+                    <p>The fifth edition of the fast-paced stickman platformer. Dodge deadly traps, saw blades, and spikes to reach the exit.</p>
+                    <button class="play-btn" onclick="openGame('https://chsydev.github.io/vex5/')">Launch Game</button>
+                </div>
+
+                <!-- 5. Super Mario 64 Card -->
+                <div class="game-card">
+                    <h3>Super Mario 64</h3>
+                    <p>Classic 3D Mario adventure running right in your browser. Controls: Arrow Keys to move, X to jump, C to attack, Enter to start.</p>
+                    <button class="play-btn" onclick="openGame('https://chsydev.github.io/Mario64webgl/')">Launch Game</button>
+                </div>
             </div>
         </main>
 
