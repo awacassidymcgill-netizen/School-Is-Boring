@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protected Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        /* Hides the website content by default */
+        #protected-content {
+            display: none;
+        }
+        header {
+            background-color: #24292e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        // Custom prompt message applied below
+        var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
+        
+        // Checks if the entered phrase matches exactly
+        if (password === "awa, let me in") {
+            window.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('protected-content').style.display = 'block';
+            });
+        } else {
+            alert("Incorrect passcode. Access denied.");
+            window.location.reload(); 
+        }
+    </script>
+
+    <!-- Content unlocks once the correct phrase is entered -->
+    <div id="protected-content">
+        <header>
+            <h1>Welcome to... School Is Boring!</h1>
+        </header>
+
+        <main>
+            <h2>Secure Content Area</h2>
+            <p>Success! You used the correct phrase to unlock the website content.</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Protected Website.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
