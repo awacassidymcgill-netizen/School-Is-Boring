@@ -18,7 +18,7 @@
 <body>
 
     <script>
-        // Check if already authenticated this session so they don't get prompted on every click
+        // Check if already authenticated this session
         if (sessionStorage.getItem('authenticated') !== 'true') {
             var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
             if (password === "awa, let me in") {
@@ -61,3 +61,4 @@
 
 </body>
 </html>
+
