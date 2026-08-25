@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade - Protected Website</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #121214; color: #fff; }
+        #protected-content { display: none; }
+        header { background-color: #1a1a1e; color: #fff; padding: 20px; text-align: center; border-bottom: 2px solid #28a745; }
+        nav { background: #1a1a1e; padding: 10px; text-align: center; }
+        nav a { color: #b3b3b3; margin: 0 15px; text-decoration: none; font-weight: bold; }
+        nav a:hover, nav a:focus { color: #28a745; text-decoration: underline; }
+        main { max-width: 900px; margin: 20px auto; padding: 20px; background: #1e1e24; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
+        
+        /* Arcade Design Layout */
+        .arcade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .game-card { background: #2a2a32; border: 1px solid #3f3f46; border-radius: 6px; padding: 15px; text-align: center; }
+        .game-card h3 { margin-top: 0; color: #28a745; }
+        .play-btn { background: #28a745; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; transition: background 0.2s; }
+        .play-btn:hover { background: #218838; }
+        
+        /* Modal Popup Window for Playing Games */
+        .game-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
+        .modal-content { position: relative; width: 800px; max-width: 95%; height: 600px; background: #000; border: 3px solid #28a745; border-radius: 8px; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .close-btn { margin-bottom: 15px; background: #dc3545; color: white; padding: 8px 16px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; align-self: flex-end; }
+        .close-btn:hover { background: #bd2130; }
+    </style>
+</head>
+<body>
+
+    <script>
+        // Gatekeeper Authentication Verification
+        if (sessionStorage.getItem('authenticated') !== 'true') {
+            var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
+            if (password === "awa, let me in") {
+                sessionStorage.setItem('authenticated', 'true');
+            } else {
+                alert("Incorrect passcode. Access denied.");
+                window.location.href = "index.html"; 
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('protected-content').style.display = 'block';
+            }
+        });
+
+        // Open and close game frame viewport functions
+        function openGame(url) {
+            document.getElementById('game-frame').src = url;
+            document.getElementById('arcade-modal').style.display = 'flex';
+        }
+
+        function closeGame() {
+            document.getElementById('game-frame').src = '';
+            document.getElementById('arcade-modal').style.display = 'none';
+        }
+    </script>
+
+    <div id="protected-content">
+        <header>
+            <h1>Unblocked Student Arcade</h1>
+        </header>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="news.html">News</a>
+            <a href="timetable.html">Timetable</a>
+            <a href="games.html">Games</a>
+        </nav>
+
+        <main>
+            <h2>Available HTML5 Games</h2>
+            <p>Select any game card below to fire up a canvas frame directly inside this secure tab.</p>
+            
+            <div class="arcade-grid">
+                <!-- Game 1: 2048 -->
+                <div class="game-card">
+                    <h3>2048 Classic</h3>
+                    <p>Slide matching numbered tile structures to merge math blocks into the legendary 2048 cluster.</p>
+                    <button class="play-btn" onclick="openGame('https://play2048.co')">Launch Game</button>
+                </div>
+
+                <!-- Game 2: Hextris -->
+                <div class="game-card">
+                    <h3>Hextris Puzzle</h3>
+                    <p>A fast-paced, multi-directional spin on classic block-stacking puzzles inside a spinning hexagon loop.</p>
+                    <button class="play-btn" onclick="openGame('https://hextris.io')">Launch Game</button>
+                </div>
+
+                <!-- Game 3: Pac-Man (Google Maps Arcade Engine) -->
+                <div class="game-card">
+                    <h3>Retro Arcade</h3>
+                    <p>Navigate the traditional maze corridors, outrun the ghosts, and clear all pellets cleanly.</p>
+                    <button class="play-btn" onclick="openGame('https://github.io')">Launch Game</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Protected Website Portal.</p>
+        </footer>
+    </div>
+
+    <!-- Active Game Window Injector -->
+    <div id="arcade-modal" class="game-modal">
+        <div style="width: 800px; max-width: 95%; display: flex; flex-direction: column;">
+            <button class="close-btn" onclick="closeGame()">✖ Exit Game</button>
+            <div class="modal-content">
+                <iframe id="game-frame" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
