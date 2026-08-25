@@ -10,29 +10,28 @@
         header { background-color: #1a1a1e; color: #fff; padding: 20px; text-align: center; border-bottom: 2px solid #28a745; }
         nav { background: #1a1a1e; padding: 10px; text-align: center; }
         nav a { color: #b3b3b3; margin: 0 15px; text-decoration: none; font-weight: bold; }
-        nav a:hover, nav a:focus { color: #28a745; text-decoration: underline; }
+        nav a:hover { color: #28a745; text-decoration: underline; }
         main { max-width: 900px; margin: 20px auto; padding: 20px; background: #1e1e24; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
         
-        /* Arcade Design Layout */
         .arcade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
         .game-card { background: #2a2a32; border: 1px solid #3f3f46; border-radius: 6px; padding: 15px; text-align: center; }
         .game-card h3 { margin-top: 0; color: #28a745; }
-        .play-btn { background: #28a745; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; transition: background 0.2s; }
+        .play-btn { background: #28a745; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; }
         .play-btn:hover { background: #218838; }
         
-        /* Modal Popup Window for Playing Games */
-        .game-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
-        .modal-content { position: relative; width: 800px; max-width: 95%; height: 600px; background: #000; border: 3px solid #28a745; border-radius: 8px; }
-        iframe { width: 100%; height: 100%; border: none; }
-        .close-btn { margin-bottom: 15px; background: #dc3545; color: white; padding: 8px 16px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; align-self: flex-end; }
-        .close-btn:hover { background: #bd2130; }
+        /* Interactive Game Screens */
+        .game-container { display: none; margin-top: 30px; background: #000; padding: 20px; border-radius: 8px; border: 2px solid #28a745; text-align: center; }
+        .game-active { display: block; }
+        canvas { background: #111; display: block; margin: 0 auto; border: 1px solid #444; max-width: 100%; }
+        .score-board { font-size: 1.2rem; font-weight: bold; color: #28a745; margin-bottom: 10px; }
+        .close-game-btn { background: #dc3545; color: white; border: none; padding: 5px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <script>
-        // Gatekeeper Authentication Verification
+        // Security Gatekeeper Logic
         if (sessionStorage.getItem('authenticated') !== 'true') {
             var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
             if (password === "awa, let me in") {
@@ -49,15 +48,99 @@
             }
         });
 
-        // Open and close game frame viewport functions
-        function openGame(url) {
-            document.getElementById('game-frame').src = url;
-            document.getElementById('arcade-modal').style.display = 'flex';
+        // Global animation frame holder to prevent performance memory leaks
+        let gameLoopInterval;
+
+        function closeActiveGame() {
+            document.querySelectorAll('.game-container').forEach(c => c.classList.remove('game-active'));
+            if (gameLoopInterval) clearInterval(gameLoopInterval);
+            window.onkeydown = null; // Clean up controls
         }
 
-        function closeGame() {
-            document.getElementById('game-frame').src = '';
-            document.getElementById('arcade-modal').style.display = 'none';
+        // GAME 1: RETRO CLICKER ENGINE
+        let cookies = 0;
+        function playClicker() {
+            closeActiveGame();
+            document.getElementById('clicker-game').classList.add('game-active');
+            cookies = parseInt(localStorage.getItem('saved_cookies')) || 0;
+            document.getElementById('cookie-score').innerText = cookies;
+        }
+        function clickCookie() {
+            cookies++;
+            localStorage.setItem('saved_cookies', cookies);
+            document.getElementById('cookie-score').innerText = cookies;
+        }
+
+        // GAME 2: SNAKE ENGINE
+        function playSnake() {
+            closeActiveGame();
+            document.getElementById('snake-game').classList.add('game-active');
+            
+            const canvas = document.getElementById("snakeCanvas");
+            const ctx = canvas.getContext("2d");
+            const box = 20;
+            let score = 0;
+            
+            let snake = [{x: 10 * box, y: 10 * box}];
+            let food = { x: Math.floor(Math.random()*19+1)*box, y: Math.floor(Math.random()*19+1)*box };
+            let d = "RIGHT";
+
+            window.onkeydown = function(e) {
+                if(e.keyCode == 37 && d != "RIGHT") d = "LEFT";
+                else if(e.keyCode == 38 && d != "DOWN") d = "UP";
+                else if(e.keyCode == 39 && d != "LEFT") d = "RIGHT";
+                else if(e.keyCode == 40 && d != "UP") d = "DOWN";
+                if([37, 38, 39, 40].includes(e.keyCode)) e.preventDefault(); // Stop window scrolling
+            };
+
+            function draw() {
+                ctx.fillStyle = "#111";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                for(let i = 0; i < snake.length; i++) {
+                    ctx.fillStyle = (i == 0) ? "#28a745" : "#1e7e34";
+                    ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                }
+                
+                ctx.fillStyle = "#dc3545";
+                ctx.fillRect(food.x, food.y, box, box);
+                
+                let snakeX = snake[0].x;
+                let snakeY = snake[0].y;
+                
+                if(d == "LEFT") snakeX -= box;
+                if(d == "UP") snakeY -= box;
+                if(d == "RIGHT") snakeX += box;
+                if(d == "DOWN") snakeY += box;
+                
+                if(snakeX == food.x && snakeY == food.y) {
+                    score++;
+                    document.getElementById('snake-score').innerText = score;
+                    food = { x: Math.floor(Math.random()*19+1)*box, y: Math.floor(Math.random()*19+1)*box };
+                } else {
+                    snake.pop();
+                }
+                
+                let newHead = { x: snakeX, y: snakeY };
+                
+                // Collision boundaries check
+                if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+                    clearInterval(gameLoopInterval);
+                    alert("Game Over! Score: " + score);
+                    closeActiveGame();
+                }
+                
+                snake.unshift(newHead);
+            }
+
+            function collision(head, array) {
+                for(let i = 0; i < array.length; i++) {
+                    if(head.x == array[i].x && head.y == array[i].y) return true;
+                }
+                return false;
+            }
+
+            gameLoopInterval = setInterval(draw, 100);
         }
     </script>
 
@@ -75,31 +158,40 @@
         </nav>
 
         <main>
-            <h2>Available HTML5 Games</h2>
-            <p>Select any game card below to fire up a canvas frame directly inside this secure tab.</p>
+            <h2>Available Local Web Games</h2>
+            <p>These games are hosted directly inside your own GitHub code, meaning they work anywhere and can never be blocked by external servers.</p>
             
             <div class="arcade-grid">
-                <!-- Game 1: 2048 -->
+                <!-- Game Card 1 -->
                 <div class="game-card">
-                    <h3>2048 Classic</h3>
-                    <p>Slide matching numbered tile structures to merge math blocks into the legendary 2048 cluster.</p>
-                    <button class="play-btn" onclick="openGame('https://play2048.co')">Launch Game</button>
+                    <h3>Cookie Clicker</h3>
+                    <p>Click the macro asset to accumulate cookies. Saves your high score to your local browser storage memory.</p>
+                    <button class="play-btn" onclick="playClicker()">Launch Game</button>
                 </div>
 
-                <!-- Game 2: Hextris -->
+                <!-- Game Card 2 -->
                 <div class="game-card">
-                    <h3>Hextris Puzzle</h3>
-                    <p>A fast-paced, multi-directional spin on classic block-stacking puzzles inside a spinning hexagon loop.</p>
-                    <button class="play-btn" onclick="openGame('https://hextris.io')">Launch Game</button>
-                </div>
-
-                <!-- Game 3: Pac-Man (Google Maps Arcade Engine) -->
-                <div class="game-card">
-                    <h3>Retro Arcade</h3>
-                    <p>Navigate the traditional maze corridors, outrun the ghosts, and clear all pellets cleanly.</p>
-                    <button class="play-btn" onclick="openGame('https://github.io')">Launch Game</button>
+                    <h3>Classic Snake</h3>
+                    <p>Use your keyboard arrow keys to navigate the green snake grid, gather food targets, and avoid walls.</p>
+                    <button class="play-btn" onclick="playSnake()">Launch Game</button>
                 </div>
             </div>
+
+            <!-- RENDER AREA: COOKIE CLICKER -->
+            <div id="clicker-game" class="game-container">
+                <div class="score-board">Cookies: <span id="cookie-score">0</span></div>
+                <button onclick="clickCookie()" style="font-size: 5rem; cursor:pointer; background:none; border:none; outline:none;">🍪</button>
+                <p>Click the big cookie above to build your empire!</p>
+                <button class="close-game-btn" onclick="closeActiveGame()">Close Game</button>
+            </div>
+
+            <!-- RENDER AREA: SNAKE -->
+            <div id="snake-game" class="game-container">
+                <div class="score-board">Score: <span id="snake-score">0</span></div>
+                <canvas id="snakeCanvas" width="400" height="400"></canvas>
+                <button class="close-game-btn" onclick="closeActiveGame()">Close Game</button>
+            </div>
+
         </main>
 
         <footer>
@@ -107,15 +199,6 @@
         </footer>
     </div>
 
-    <!-- Active Game Window Injector -->
-    <div id="arcade-modal" class="game-modal">
-        <div style="width: 800px; max-width: 95%; display: flex; flex-direction: column;">
-            <button class="close-btn" onclick="closeGame()">✖ Exit Game</button>
-            <div class="modal-content">
-                <iframe id="game-frame" src=""></iframe>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>
+
