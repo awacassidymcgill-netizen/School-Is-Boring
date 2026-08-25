@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - Protected Website</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+        #protected-content { display: none; }
+        header { background-color: #24292e; color: #fff; padding: 20px; text-align: center; }
+        nav { background: #333; padding: 10px; text-align: center; }
+        nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        main { max-width: 800px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #777; }
+    </style>
+</head>
+<body>
+
+    <script>
+        if (sessionStorage.getItem('authenticated') !== 'true') {
+            var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
+            if (password === "awa, let me in") {
+                sessionStorage.setItem('authenticated', 'true');
+            } else {
+                alert("Incorrect passcode. Access denied.");
+                window.location.href = "index.html"; 
+            }
+        }
+        window.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('protected-content').style.display = 'block';
+            }
+        });
+    </script>
+
+    <div id="protected-content">
+        <header>
+            <h1>My Protected Website</h1>
+        </header>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="news.html">News</a>
+            <a href="timetable.html">Timetable</a>
+        </nav>
+
+        <main>
+            <h2>Latest News</h2>
+            <p>This is a blank template for your news alerts or blog posts.</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Protected Website.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
