@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Protected Website</title>
+    <title>About - School Is Boring</title>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+        :root { --bg-color: #0b0c10; --card-bg: rgba(26, 26, 36, 0.6); --border-color: rgba(40, 167, 69, 0.2); --accent-glow: #28a745; --text-main: #ffffff; --text-muted: #a1a1aa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; }
         #protected-content { display: none; }
-        header { background-color: #24292e; color: #fff; padding: 20px; text-align: center; }
-        nav { background: #333; padding: 10px; text-align: center; }
-        nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
-        nav a:hover { text-decoration: underline; }
-        main { max-width: 800px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #777; }
+        header { background: rgba(11, 12, 16, 0.8); backdrop-filter: blur(10px); padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        header h1 { margin: 0; font-size: 2.5rem; background: linear-gradient(45deg, #28a745, #5cd67a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        nav { background: rgba(26, 26, 36, 0.5); backdrop-filter: blur(5px); padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        nav a { color: var(--text-muted); margin: 0 15px; text-decoration: none; font-weight: 600; padding: 8px 16px; border-radius: 20px; }
+        nav a:hover, nav a.active { color: var(--text-main); background: var(--card-bg); box-shadow: 0 0 15px var(--border-color); border: 1px solid var(--border-color); }
+        main { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .about-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -20,41 +22,34 @@
     <script>
         if (sessionStorage.getItem('authenticated') !== 'true') {
             var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
-            if (password === "awa, let me in") {
-                sessionStorage.setItem('authenticated', 'true');
-            } else {
-                alert("Incorrect passcode. Access denied.");
-                window.location.href = "index.html"; 
-            }
+            if (password === "awa, let me in") { sessionStorage.setItem('authenticated', 'true'); } 
+            else { window.location.href = "index.html"; }
         }
         window.addEventListener('DOMContentLoaded', function() {
-            if (sessionStorage.getItem('authenticated') === 'true') {
-                document.getElementById('protected-content').style.display = 'block';
-            }
+            if (sessionStorage.getItem('authenticated') === 'true') { document.getElementById('protected-content').style.display = 'block'; }
         });
     </script>
 
     <div id="protected-content">
         <header>
-            <h1>My Protected Website</h1>
+            <h1>System Information</h1>
         </header>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="news.html">News</a>
-    <a href="timetable.html">Timetable</a>
-    <a href="games.html">Games</a> <!-- Add this line -->
-</nav>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html" class="active">About</a>
+            <a href="news.html">News</a>
+            <a href="timetable.html">Timetable</a>
+            <a href="assessments.html">Assessments</a>
+            <a href="games.html">Games</a>
+        </nav>
 
         <main>
-            <h2>About Us</h2>
-            <p>This is a blank template for your about section. Replace this text later.</p>
+            <div class="about-card">
+                <h2>Project Manifest</h2>
+                <p><strong>School Is Boring</strong> was drafted as an all-in-one productivity dashboard bypass. It lets users log custom day-to-day classes locally, build secure assessment trackers, and switch layouts seamlessly into an unblocked streaming canvas gaming system whenever required.</p>
+            </div>
         </main>
-
-        <footer>
-            <p>&copy; 2026 Protected Website.</p>
-        </footer>
     </div>
 
 </body>
