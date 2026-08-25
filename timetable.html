@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timetable - Protected Website</title>
+    <title>My Timetable - Protected Website</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
         #protected-content { display: none; }
@@ -14,19 +14,22 @@
         main { max-width: 800px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #777; }
         
-        /* Timetable styling rules */
-        .day-box { background: #eef2f7; padding: 15px; border-left: 5px solid #24292e; margin-bottom: 15px; border-radius: 4px; display: none; }
-        .active-day { display: block; border-left-color: #28a745; background: #ebf7ed; }
-        .day-title { margin-top: 0; color: #24292e; font-size: 1.2rem; }
-        .current-tag { color: #28a745; font-weight: bold; font-size: 0.9rem; margin-left: 10px; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 5px; }
+        /* Timetable App Styling */
+        .setup-section { background: #eef2f7; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ccc; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        select, input, button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        button:hover { background-color: #218838; }
+        .timetable-display { background: #fff; border: 2px solid #24292e; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .day-header { font-size: 1.4rem; color: #24292e; border-bottom: 2px solid #24292e; padding-bottom: 5px; margin-top: 0; }
+        .period-item { padding: 8px 0; border-bottom: 1px dashed #eee; }
+        .period-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
     <script>
-        // Restrict access using session state logic
+        // Access Protection Gatekeeper
         if (sessionStorage.getItem('authenticated') !== 'true') {
             var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
             if (password === "awa, let me in") {
@@ -37,40 +40,68 @@
             }
         }
         
-        // Show content and calculate current weekday index
+        // Load the interface once verified
         window.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('authenticated') === 'true') {
                 document.getElementById('protected-content').style.display = 'block';
-                showToday();
+                loadSavedTimetable();
             }
         });
 
-        function showToday() {
-            // getDay() gives 0 for Sunday, 1 for Monday, up to 6 for Saturday
-            var todayIndex = new Date().getDay(); 
+        // Save entry function
+        function savePeriod() {
+            var day = document.getElementById('day-select').value;
+            var period = document.getElementById('period-select').value;
+            var subject = document.getElementById('subject-input').value;
             
-            // Map Sunday(0) and Saturday(6) to Monday(1) so weekend viewers still see school days
-            if (todayIndex === 0 || todayIndex === 6) {
-                todayIndex = 1; 
+            if (!subject.trim()) {
+                alert("Please enter a subject name.");
+                return;
             }
+
+            // Generate a unique data key for storage unique to this browser device
+            var storageKey = day + "-" + period;
+            localStorage.setItem(storageKey, subject);
             
-            // Find the corresponding HTML container matching our day ID
-            var targetId = "day-" + todayIndex;
-            var element = document.getElementById(targetId);
-            
-            if (element) {
-                element.classList.add("active-day");
-                var tag = document.createElement("span");
-                tag.className = "current-tag";
-                tag.innerText = "• Today's Schedule";
-                element.querySelector(".day-title").appendChild(tag);
-            }
+            // Clear input and refresh view
+            document.getElementById('subject-input').value = "";
+            loadSavedTimetable();
+            alert("Saved successfully!");
+        }
+
+        // Render data from device memory
+        function loadSavedTimetable() {
+            var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            var periods = ['Period 1', 'Period 2', 'Period 3', 'Period 4'];
+            var outputHtml = "";
+
+            days.forEach(function(day) {
+                var dayHasContent = false;
+                var dayHtml = "<div class='timetable-display'><h3 class='day-header'>" + day + "</h3>";
+                
+                periods.forEach(function(period) {
+                    var savedSubject = localStorage.getItem(day + "-" + period);
+                    if (savedSubject) {
+                        dayHasContent = true;
+                        dayHtml += "<div class='period-item'><strong>" + period + ":</strong> " + savedSubject + "</div>";
+                    }
+                });
+
+                if (!dayHasContent) {
+                    dayHtml += "<div class='period-item' style='color:#999;'>No classes added for this day yet.</div>";
+                }
+                
+                dayHtml += "</div>";
+                outputHtml += dayHtml;
+            });
+
+            document.getElementById('timetable-output').innerHTML = outputHtml;
         }
     </script>
 
     <div id="protected-content">
         <header>
-            <h1>My Protected Website</h1>
+            <h1>My Personalised Portal</h1>
         </header>
 
         <nav>
@@ -81,60 +112,39 @@
         </nav>
 
         <main>
-            <h2>Weekly Timetable Structure</h2>
-            <p>The code reads your device calendar and automatically reveals the current day's active schedule box in green.</p>
-            <hr><br>
+            <h2>Your Custom Schedule Builder</h2>
+            <p>Every student using this link will see their own custom schedule. Your data is stored safely right on your own device browser.</p>
+            
+            <!-- Input Form Box -->
+            <div class="setup-section">
+                <h3>Add or Update a Class</h3>
+                
+                <label for="day-select">Select Day:</label>
+                <select id="day-select">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                </select>
 
-            <!-- Monday (Day index 1) -->
-            <div id="day-1" class="day-box">
-                <h3 class="day-title">Monday</h3>
-                <ul>
-                    <li><strong>Period 1:</strong> Mathematics - Room 14</li>
-                    <li><strong>Period 2:</strong> English - Room 3</li>
-                    <li><strong>Period 3:</strong> Science Lab - Block B</li>
-                </ul>
+                <label for="period-select">Select Period:</label>
+                <select id="period-select">
+                    <option value="Period 1">Period 1</option>
+                    <option value="Period 2">Period 2</option>
+                    <option value="Period 3">Period 3</option>
+                    <option value="Period 4">Period 4</option>
+                </select>
+
+                <label for="subject-input">Subject & Room Details:</label>
+                <input type="text" id="subject-input" placeholder="e.g., Math - Room 12">
+
+                <br><br>
+                <button onclick="savePeriod()">Save to My Device</button>
             </div>
 
-            <!-- Tuesday (Day index 2) -->
-            <div id="day-2" class="day-box">
-                <h3 class="day-title">Tuesday</h3>
-                <ul>
-                    <li><strong>Period 1:</strong> History - Room 9</li>
-                    <li><strong>Period 2:</strong> Physical Ed - Oval</li>
-                    <li><strong>Period 3:</strong> Geography - Room 12</li>
-                </ul>
-            </div>
-
-            <!-- Wednesday (Day index 3) -->
-            <div id="day-3" class="day-box">
-                <h3 class="day-title">Wednesday</h3>
-                <ul>
-                    <li><strong>Period 1:</strong> Art & Design - Studio 1</li>
-                    <li><strong>Period 2:</strong> Mathematics - Room 14</li>
-                    <li><strong>Period 3:</strong> Computing - Lab 2</li>
-                </ul>
-            </div>
-
-            <!-- Thursday (Day index 4) -->
-            <div id="day-4" class="day-box">
-                <h3 class="day-title">Thursday</h3>
-                <ul>
-                    <li><strong>Period 1:</strong> English - Room 3</li>
-                    <li><strong>Period 2:</strong> Science Lab - Block B</li>
-                    <li><strong>Period 3:</strong> Music Studies - Hall</li>
-                </ul>
-            </div>
-
-            <!-- Friday (Day index 5) -->
-            <div id="day-5" class="day-box">
-                <h3 class="day-title">Friday</h3>
-                <ul>
-                    <li><strong>Period 1:</strong> French/Language - Room 5</li>
-                    <li><strong>Period 2:</strong> Geography - Room 12</li>
-                    <li><strong>Period 3:</strong> Weekly Assembly - Main Hall</li>
-                </ul>
-            </div>
-
+            <h2>My Current Timetable</h2>
+            <div id="timetable-output"></div>
         </main>
 
         <footer>
@@ -144,4 +154,3 @@
 
 </body>
 </html>
-
