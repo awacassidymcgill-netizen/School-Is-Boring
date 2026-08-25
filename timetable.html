@@ -13,11 +13,20 @@
         nav a:hover { text-decoration: underline; }
         main { max-width: 800px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #777; }
+        
+        /* Timetable styling rules */
+        .day-box { background: #eef2f7; padding: 15px; border-left: 5px solid #24292e; margin-bottom: 15px; border-radius: 4px; display: none; }
+        .active-day { display: block; border-left-color: #28a745; background: #ebf7ed; }
+        .day-title { margin-top: 0; color: #24292e; font-size: 1.2rem; }
+        .current-tag { color: #28a745; font-weight: bold; font-size: 0.9rem; margin-left: 10px; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
     <script>
+        // Restrict access using session state logic
         if (sessionStorage.getItem('authenticated') !== 'true') {
             var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
             if (password === "awa, let me in") {
@@ -27,11 +36,36 @@
                 window.location.href = "index.html"; 
             }
         }
+        
+        // Show content and calculate current weekday index
         window.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('authenticated') === 'true') {
                 document.getElementById('protected-content').style.display = 'block';
+                showToday();
             }
         });
+
+        function showToday() {
+            // getDay() gives 0 for Sunday, 1 for Monday, up to 6 for Saturday
+            var todayIndex = new Date().getDay(); 
+            
+            // Map Sunday(0) and Saturday(6) to Monday(1) so weekend viewers still see school days
+            if (todayIndex === 0 || todayIndex === 6) {
+                todayIndex = 1; 
+            }
+            
+            // Find the corresponding HTML container matching our day ID
+            var targetId = "day-" + todayIndex;
+            var element = document.getElementById(targetId);
+            
+            if (element) {
+                element.classList.add("active-day");
+                var tag = document.createElement("span");
+                tag.className = "current-tag";
+                tag.innerText = "• Today's Schedule";
+                element.querySelector(".day-title").appendChild(tag);
+            }
+        }
     </script>
 
     <div id="protected-content">
@@ -47,8 +81,60 @@
         </nav>
 
         <main>
-            <h2>Timetable Schedule</h2>
-            <p>This is a blank template for your daily schedule or timetable layout.</p>
+            <h2>Weekly Timetable Structure</h2>
+            <p>The code reads your device calendar and automatically reveals the current day's active schedule box in green.</p>
+            <hr><br>
+
+            <!-- Monday (Day index 1) -->
+            <div id="day-1" class="day-box">
+                <h3 class="day-title">Monday</h3>
+                <ul>
+                    <li><strong>Period 1:</strong> Mathematics - Room 14</li>
+                    <li><strong>Period 2:</strong> English - Room 3</li>
+                    <li><strong>Period 3:</strong> Science Lab - Block B</li>
+                </ul>
+            </div>
+
+            <!-- Tuesday (Day index 2) -->
+            <div id="day-2" class="day-box">
+                <h3 class="day-title">Tuesday</h3>
+                <ul>
+                    <li><strong>Period 1:</strong> History - Room 9</li>
+                    <li><strong>Period 2:</strong> Physical Ed - Oval</li>
+                    <li><strong>Period 3:</strong> Geography - Room 12</li>
+                </ul>
+            </div>
+
+            <!-- Wednesday (Day index 3) -->
+            <div id="day-3" class="day-box">
+                <h3 class="day-title">Wednesday</h3>
+                <ul>
+                    <li><strong>Period 1:</strong> Art & Design - Studio 1</li>
+                    <li><strong>Period 2:</strong> Mathematics - Room 14</li>
+                    <li><strong>Period 3:</strong> Computing - Lab 2</li>
+                </ul>
+            </div>
+
+            <!-- Thursday (Day index 4) -->
+            <div id="day-4" class="day-box">
+                <h3 class="day-title">Thursday</h3>
+                <ul>
+                    <li><strong>Period 1:</strong> English - Room 3</li>
+                    <li><strong>Period 2:</strong> Science Lab - Block B</li>
+                    <li><strong>Period 3:</strong> Music Studies - Hall</li>
+                </ul>
+            </div>
+
+            <!-- Friday (Day index 5) -->
+            <div id="day-5" class="day-box">
+                <h3 class="day-title">Friday</h3>
+                <ul>
+                    <li><strong>Period 1:</strong> French/Language - Room 5</li>
+                    <li><strong>Period 2:</strong> Geography - Room 12</li>
+                    <li><strong>Period 3:</strong> Weekly Assembly - Main Hall</li>
+                </ul>
+            </div>
+
         </main>
 
         <footer>
@@ -58,3 +144,4 @@
 
 </body>
 </html>
+
