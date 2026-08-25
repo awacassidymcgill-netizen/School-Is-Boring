@@ -3,22 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Protected Website</title>
+    <title>Home - School Is Boring</title>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+        :root {
+            --bg-color: #0b0c10;
+            --card-bg: rgba(26, 26, 36, 0.6);
+            --border-color: rgba(40, 167, 69, 0.2);
+            --accent-glow: #28a745;
+            --accent-hover: #218838;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
         #protected-content { display: none; }
-        header { background-color: #24292e; color: #fff; padding: 20px; text-align: center; }
-        nav { background: #333; padding: 10px; text-align: center; }
-        nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
-        nav a:hover { text-decoration: underline; }
-        main { max-width: 800px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #777; }
+        
+        /* Modern Glassmorphism Header */
+        header { background: rgba(11, 12, 16, 0.8); backdrop-filter: blur(10px); padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        header h1 { margin: 0; font-size: 2.8rem; letter-spacing: -1px; background: linear-gradient(45deg, #28a745, #5cd67a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        header p { margin: 10px 0 0 0; color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 10px auto 0 auto; }
+        
+        /* Interactive Nav Bar */
+        nav { background: rgba(26, 26, 36, 0.5); backdrop-filter: blur(5px); padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        nav a { color: var(--text-muted); margin: 0 15px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; padding: 8px 16px; border-radius: 20px; }
+        nav a:hover, nav a.active { color: var(--text-main); background: var(--card-bg); box-shadow: 0 0 15px var(--border-color); border: 1px solid var(--border-color); }
+        
+        /* Main Layout Grid */
+        main { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .hero-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        
+        /* Feature Fast-Buttons Grid */
+        .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 30px; }
+        .hub-btn { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 25px; text-align: center; text-decoration: none; color: var(--text-main); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .hub-btn:hover { transform: translateY(-5px); border-color: var(--accent-glow); box-shadow: 0 10px 20px rgba(40, 167, 69, 0.15); }
+        .hub-btn h3 { margin: 0 0 10px 0; color: var(--accent-glow); font-size: 1.3rem; }
+        .hub-btn p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+        
+        /* Holiday Countdown Clock Widget */
+        .countdown-container { background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(11, 12, 16, 0.5)); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: center; margin-top: 30px; }
+        .timer-display { font-size: 2rem; font-weight: 700; color: var(--text-main); letter-spacing: 2px; margin-top: 10px; }
+        
+        footer { text-align: center; padding: 40px 20px; font-size: 0.9rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); margin-top: 60px; }
     </style>
 </head>
 <body>
 
     <script>
-        // Check if already authenticated this session
         if (sessionStorage.getItem('authenticated') !== 'true') {
             var password = prompt("Nuh uh, no unverified people. Enter the Password Here:");
             if (password === "awa, let me in") {
@@ -28,39 +57,84 @@
                 window.location.reload(); 
             }
         }
-        
-        // Show content if authenticated
         window.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('authenticated') === 'true') {
                 document.getElementById('protected-content').style.display = 'block';
+                startCountdown();
             }
         });
+
+        function startCountdown() {
+            // Hardcoded placeholder countdown date for school holidays (adjust as needed)
+            const targetDate = new Date("December 18, 2026 15:00:00").getTime();
+            setInterval(function() {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+                if (diff < 0) {
+                    document.getElementById('timer').innerText = "Holidays have started!";
+                    return;
+                }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('timer').innerText = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+            }, 1000);
+        }
     </script>
 
     <div id="protected-content">
         <header>
-            <h1>My Protected Website</h1>
+            <h1>School Is Boring</h1>
+            <p>A student hub for everything from gaming to assessment management.</p>
         </header>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="news.html">News</a>
-    <a href="timetable.html">Timetable</a>
-    <a href="games.html">Games</a> <!-- Add this line -->
-</nav>
-
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="about.html">About</a>
+            <a href="news.html">News</a>
+            <a href="timetable.html">Timetable</a>
+            <a href="assessments.html">Assessments</a>
+            <a href="games.html">Games</a>
+        </nav>
 
         <main>
-            <h2>Home Page</h2>
-            <p>Welcome to the main dashboard. This content is placeholder layout text.</p>
+            <div class="hero-card">
+                <h2>Welcome back to the Command Dashboard</h2>
+                <p>Navigate through your tools cleanly using the glowing portal launch cards below or the quick-action navigation matrix pinned above.</p>
+            </div>
+
+            <div class="hub-grid">
+                <a href="games.html" class="hub-btn">
+                    <h3>🕹️ Arcade Portal</h3>
+                    <p>Launch high-performance unblocked games instantly inside secure overlay viewports.</p>
+                </a>
+                <a href="assessments.html" class="hub-btn">
+                    <h3>📅 Tasks & Grades</h3>
+                    <p>Track your assignments, clear checklist item criteria, and manage weights.</p>
+                </a>
+                <a href="timetable.html" class="hub-btn">
+                    <h3>⏱️ Dynamic Schedule</h3>
+                    <p>Review classes assigned to your custom layout profile structures automatically.</p>
+                </a>
+                <a href="news.html" class="hub-btn">
+                    <h3>📢 Broadcast Feed</h3>
+                    <p>Check recent student updates, network bulletins, and upcoming log feeds.</p>
+                </a>
+            </div>
+
+            <div class="countdown-container">
+                <strong>⏳ COUNTDOWN UNTIL END-OF-YEAR HOLIDAYS</strong>
+                <div id="timer" class="timer-display">Loading Chronometer...</div>
+            </div>
         </main>
 
         <footer>
-            <p>&copy; 2026 Protected Website.</p>
+            <p>&copy; 2026 School Is Boring Portal Hub. Built with absolute modern engineering templates.</p>
         </footer>
     </div>
 
 </body>
 </html>
+
 
